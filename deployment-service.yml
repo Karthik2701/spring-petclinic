@@ -15,6 +15,9 @@ spec:
       containers:
         - name: petclinic
           image: 992382714938.dkr.ecr.us-east-1.amazonaws.com/spring-petclinic:${BUILD_NUMBER}
+          ports:
+            - containerPort: 8080
+          
 
 
 
