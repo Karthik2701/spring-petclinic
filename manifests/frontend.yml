@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: petclinic
+  template:
+    metadata:
+      labels:
+        name: petclinic
+    spec:
+      containers:
+        - name: petclinic
+          image: karthik2701/petclinic:17
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: front-cf
+                  key: mysqluser
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: front-cf
+                  key: mysqldatabase
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: front-secret
+                  key: mysqlpassword
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: front-secret
+                  key: mysqlrootpassword
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-svc
+spec:
+  selector:
+    name: petclinic
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30050

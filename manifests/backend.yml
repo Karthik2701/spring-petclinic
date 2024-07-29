@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mysql
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.4
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: front-cf
+                  key: mysqluser
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: front-cf
+                  key: mysqldatabase
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: front-secret
+                  key: mysqlpassword
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: front-secret
+                  key: mysqlrootpassword
+          volumeMounts:
+            - mountPath: /var/lib/pet 
+              name: pv-vol
+      volumes:
+        - name: pv-vol
+          persistentVolumeClaim:
+            claimName: pvc-vol
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+spec:
+  selector:
+    name: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
