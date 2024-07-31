@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: karthik2701/petclinic:ImageTag
+          image: karthik2701/petclinic:9
           ports:
             - containerPort: 8080
           env:
