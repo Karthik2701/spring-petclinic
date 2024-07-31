@@ -8,4 +8,4 @@ FROM gcr.io/distroless/java17-debian12:latest
 WORKDIR /app
 COPY --from=build /app/target/spring-petclinic-3.2.0-SNAPSHOT.jar ./app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=mysql", "app.jar"]
